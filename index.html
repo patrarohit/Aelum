@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form</title>
+    <center><h4>Form to be Submitted with in 3 Minutes</h4></center>
+</head>
+<body><br><br>
+    <center>
+        <form autocomplete="off" action="" onsubmit="return validateForm()">
+            
+            <label style="border: 1px solid;" id="timer"></label>
+            <br><br>
+            <label for="name">Name: </label>
+            <input type="text" name="name" id="name">
+            <br>      
+            <label for="email">E-mail: </label>
+            <input type="email" name="email" id="email">
+            <br>
+            <label for="dob">Date of Birth: </label>
+            <input type="date" name="dob" id="dob">
+            <br>
+            <label for="about">About yourself: </label>
+            <input type="text" name="about" id="about">
+            <br>
+            <canvas id="canvas" width="130" height="40" style="border: 1px solid"></canvas>
+            <br>
+            <input type="text" name="captcha" id="captcha">
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+    </center>
+    <script>
+
+        var token, countdown;
+
+        function create_captcha()
+        {
+            token = '';
+            var x = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "30px Arial";
+            for ( var i = 0; i < 5; i++) 
+                token += x.charAt(Math.floor(Math.random() * x.length));
+
+            ctx.fillText(token, 4, 30);
+        }
+
+        function timer()
+        {
+            countdown = countdown - 1;
+            var m = Math.floor(countdown / 60);
+            var s = countdown % 60;
+            document.getElementById('timer').innerText = m + ":" + s;
+            if(countdown > 0)
+                setTimeout(timer, 1000);
+        }
+
+        document.body.onload = function()
+        {
+            create_captcha();
+            countdown = 3 * 60;
+            timer();
+        }
+
+        function validateForm()
+        {
+            var input_token = document.forms["form"]["captcha"].value;
+            if(input_token != token)
+            {
+                alert("Invalid Captcha!");
+                create_captcha();
+                return false;
+            }
+            if(countdown <= 0 )
+            {
+                alert("Time out!");
+                return false;
+            }
+        }    
+    </script>
+</body>
+</html>
